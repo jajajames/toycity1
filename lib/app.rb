@@ -4,6 +4,8 @@ file = File.read(path)
 products_hash = JSON.parse(file)
 
 # Print today's date
+require 'date'
+puts Date.new(2016, 5, 28)
 
 puts "                     _            _       "
 puts "                    | |          | |      "
@@ -19,7 +21,8 @@ items = products_hash['items']
 # For each product in the data set:
 products_hash["items"].each do |toy|
   # Print the name of the toy
-  puts "Name: #{toy['title']}"
+  puts "#{toy['title']}"
+  puts"********************"
 
   # Print the retail price of the toy
   puts "Retail price: #{toy['full-price']}"
@@ -31,7 +34,7 @@ products_hash["items"].each do |toy|
   # Calculate and print the total amount of sales
   purchases = toy['purchases'].map{ |purchas| purchas['price'] }
   sales_total = purchases.reduce(:+)
-  puts "Sales total: #{sales_total}"
+  puts "Total Sales: #{sales_total}"
 
   # Calculate and print the average price the toy sold for
   average_sale = sales_total / total_purchases
@@ -59,23 +62,26 @@ items = products_hash['items']
 uniq_brands.each do |brand|
   # Print the name of the brand
   puts brand
+  puts"********************"
+
 
   # Count and print the number of the brand's toys we stock
   brand_toys = items.select { |item| item['brand'] == brand }
 # p brand_toys
   brand_quantity = brand_toys.map { |t| t['stock'] }.reduce(:+)
-  puts "Quantity stocked: #{brand_quantity}"
+  puts "Number of Products: #{brand_quantity}"
 
   # Calculate and print the average price of the brand's toys
   brand_purchases = brand_toys.map { |item| item['purchases'] }
-  brand_prices = []
-  brand_purchases.each{ |toy| toy.each { |sale| brand_prices << sale['price'] } }
-  brand_total = brand_prices.reduce(:+)
-  average_price = (brand_total / brand_prices.count)
-  puts  "Averave price: #{average_price.round(2)}"
+  brand_sales = []
+  brand_purchases.each{ |toy| toy.each { |sale| brand_sales << sale['price'] } }
+  brand_revenue = brand_sales.reduce(:+)
+  average_sale = (brand_revenue / brand_sales.count)
+  brand_prices = brand_toys.collect { |toy| toy['full-price'].to_f }
+  puts "Average Product Price: #{brand_prices.reduce(:+).round(2) / brand_prices.count}"
 
   # Calculate and print the total revenue of all the brand's toy sales combined
-  puts "Total sales: #{brand_total.round(2)}"
+  puts "Total sales: #{brand_revenue.round(2)}"
 
   puts
 end
